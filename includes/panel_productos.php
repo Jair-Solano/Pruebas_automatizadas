@@ -1,37 +1,43 @@
 <?php
-include 'conexion.php';
+include '../db/conexion.php'; 
 
-// Crear tabla si no existe para saber si el producto va en el carrusel
+// Agregar columna si no existe
 date_default_timezone_set('America/Bogota');
-$conexion->query("ALTER TABLE productos ADD COLUMN IF NOT EXISTS en_carrusel TINYINT(1) DEFAULT 0");
+$pdo->exec("ALTER TABLE productos ADD COLUMN IF NOT EXISTS en_carrusel TINYINT(1) DEFAULT 0");
 
 // Crear producto
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre'], $_POST['precio'], $_POST['descripcion'])) {
-    $nombre = $conexion->real_escape_string($_POST['nombre']);
+    $nombre = $_POST['nombre'];
     $precio = floatval($_POST['precio']);
-    $descripcion = $conexion->real_escape_string($_POST['descripcion']);
+    $descripcion = $_POST['descripcion'];
     $en_carrusel = isset($_POST['en_carrusel']) ? 1 : 0;
-    $conexion->query("INSERT INTO productos (nombre, precio, descripcion, en_carrusel) VALUES ('$nombre', $precio, '$descripcion', $en_carrusel)");
+
+    $stmt = $pdo->prepare("INSERT INTO productos (nombre, precio, descripcion, en_carrusel) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$nombre, $precio, $descripcion, $en_carrusel]);
 }
 
 // Actualizar carrusel
 if (isset($_POST['actualizar_carrusel'])) {
-    $conexion->query("UPDATE productos SET en_carrusel = 0");
+    $pdo->exec("UPDATE productos SET en_carrusel = 0");
+
     if (!empty($_POST['carrusel_ids'])) {
         $ids = array_map('intval', $_POST['carrusel_ids']);
-        $ids_str = implode(',', $ids);
-        $conexion->query("UPDATE productos SET en_carrusel = 1 WHERE ID IN ($ids_str)");
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $stmt = $pdo->prepare("UPDATE productos SET en_carrusel = 1 WHERE ID IN ($placeholders)");
+        $stmt->execute($ids);
     }
 }
 
-// Procesar botón de catálogo
+// Botón ver catálogo
 if (isset($_POST['catalogo'])) {
-    header('Location: Tienda2.php');
+    header('Location: ../landing/Tienda2.php');
     exit;
 }
 
 // Obtener productos
-$productos = $conexion->query("SELECT * FROM productos ORDER BY ID DESC");
+$stmt = $pdo->query("SELECT * FROM productos ORDER BY ID DESC");
+$productos = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -57,9 +63,12 @@ $productos = $conexion->query("SELECT * FROM productos ORDER BY ID DESC");
 <body>
 <div class="panel-container">
     <h2>Panel de Productos</h2>
-    <form class="panel-form" method="GET" action="crear_combo.php">
+    <div style="display: flex;">
+    <form  method="GET" action="crear_combo.php">
         <button type="submit" style="background:#e2b100;color:#fff;border:none;border-radius:24px;padding:10px 28px;font-size:1rem;font-weight:bold;cursor:pointer;align-self:end;" name="nuevo" value="1">Crear nuevo combo</button>
     </form>
+    <button  style="margin-left: 5px; background:#e2b100;color:#fff;border:none;border-radius:24px;padding:10px 28px;font-size:1rem;font-weight:bold;cursor:pointer;align-self:end;" onclick="window.location='ver_pedidos.php' ">Ver pedidos</button>
+    </div>
     <form method="POST">
         <table class="panel-table">
             <thead>
@@ -68,25 +77,25 @@ $productos = $conexion->query("SELECT * FROM productos ORDER BY ID DESC");
                     <th>Nombre</th>
                     <th>Precio</th>
                     <th>Descripción</th>
-					 <th>Categoría</th>
+                    <th>Categoría</th>
                     <th>En Carrusel</th>
                 </tr>
             </thead>
             <tbody>
-            <?php while($p = $productos->fetch_assoc()): ?>
+            <?php foreach ($productos as $p): ?>
                 <tr style="cursor:pointer" onclick="window.location='editar_combo.php?id=<?= $p['ID'] ?>'">
                     <td><?= $p['ID'] ?></td>
                     <td><?= htmlspecialchars($p['nombre']) ?></td>
-                    <td>$<?= number_format($p['precio'],2) ?></td>
+                    <td>$<?= number_format($p['precio'], 2) ?></td>
                     <td><?= htmlspecialchars($p['descripcion']) ?></td>
-					<td><?= htmlspecialchars($p['categoria']) ?></td>
+                    <td><?= htmlspecialchars($p['categoria'] ?? '') ?></td>
                     <td><input type="checkbox" class="carrusel-checkbox" name="carrusel_ids[]" value="<?= $p['ID'] ?>" <?= $p['en_carrusel'] ? 'checked' : '' ?> onclick="event.stopPropagation();"></td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
             </tbody>
         </table>
         <div class="panel-actions">
-            <button type="submit" name="actualizar_carrusel">Actualizar carrusel</button>
+            <button type="submit" name="actualizar_carrusel" style="background:#0074D9;color:#fff;border:none;border-radius:24px;padding:10px 28px;font-size:1rem;font-weight:bold;cursor:pointer;">Actualizar carrusel</button>
             <button type="submit" name="catalogo" style="background:#0074D9;color:#fff;border:none;border-radius:24px;padding:10px 28px;font-size:1rem;font-weight:bold;cursor:pointer;">ver cambios en catalogo</button>
         </div>
     </form>

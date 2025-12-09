@@ -11,7 +11,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url("../imag/login.png");
+    background-image: url('../imag/fondo.png'); 
     background-size: cover;
     background-position: center;
     z-index: 1;
@@ -21,7 +21,7 @@ body, html {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.507); /* Ajusta la opacidad aquí */
+    background: rgba(14, 14, 14, 0.404);
     z-index: 2;
     backdrop-filter: blur(4px);
     border-radius: inherit;

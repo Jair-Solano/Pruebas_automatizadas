@@ -35,7 +35,7 @@
 
 .pic-ctn > img {
   position: absolute;
-  top: 0; /* Asegúrate de que las imágenes estén dentro del contenedor */
+  top: 0;  
   left: calc(50% - 100px); /* Centra las imágenes horizontalmente */
   opacity: 0;
   animation: display 15s infinite;

@@ -8,12 +8,26 @@
 body, html {
     width: 100%;
     height: 100%;
-    overflow-x: hidden; /* Evita desplazamiento horizontal */
+    overflow-x: hidden;
+}
+#direccion {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    line-height: 1.5;
+    border: #a1001f;
+    color:#a1001f;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 /* Pantallas */
 .screen {
-    position: relative; /* Permite que los elementos absolutos dentro de ella se posicionen correctamente */
+    position: relative;
     width: 100%;
     height: 100vh;
     background-size: cover;
@@ -25,12 +39,12 @@ body, html {
 
 /* Primera pantalla */
 .screen1 {
-    background-image: url('../imag/1.png');    
+    background-image: url('../imag/1.png');
 }
 
 /* Segunda pantalla */
 .screen2 {
-    margin-top: 100px; 
+    margin-top: 100px;
     background-image: url('../imag/2.png');
 }
 
@@ -40,22 +54,23 @@ body, html {
 }
 
 .screen4 {
-    background-image: url('../imag/4.png');
+    background-image: url('../imag/2.png');
+
 }
 .decorative-image {
     position: static;
-    top: 90%; /* Centra la imagen verticalmente */
-    left: 0%; /* La pega al borde derecho */
-    transform: translateY(-2%); /* Ajusta el centrado */
-    z-index: 15; /* Se asegura de que esté sobre otros elementos */
-    
+    top: 90%;
+    left: 0%;
+    transform: translateY(-2%);
+    z-index: 15;
+
 }
 .decorative-cel {
     position: static;
-    top: 90%; /* Centra la imagen verticalmente */
-    right: 100%; /* Mueve el elemento más a la izquierda */
-    transform: translateY(-20%); /* Ajusta el centrado */
-    z-index: 15; /* Se asegura de que esté sobre otros elementos */
+    top: 90%;
+    right: 100%;
+    transform: translateY(-20%);
+    z-index: 15;
 }
 
 @font-face {
@@ -73,51 +88,58 @@ body, html {
 }
 @font-face {
     font-family: "Merriweather_Sans";
-    src: url("../fonts/Merriweather_Sans/static/MerriweatherSans-Light.ttf"); 
-    font-weight:  light;
+    src: url("../fonts/Merriweather_Sans/static/MerriweatherSans-Light.ttf");
+    font-weight: light;
     font-style: normal;
 }
 h2 {
     font-family: "Playball";
-    color: #6c0b0d;
+    color: #a1001f;
 }
 h1 {
     font-family: "Merriweather_Sans";
-    color:#6c0b0d
+    color:#a1001f
+}
+.p{
+    color:#a1001f
+}
+.h4{
+    color:#a1001f
 }
 .titulos {
     position: absolute;
-    top: 14%; /* Lo posiciona en el centro vertical */
-    left: 50%; /* Lo posiciona en el centro horizontal */
-    transform: translate(-50%, -50%); /* Corrige el centrado */
-    z-index: 10; /* Lo coloca encima del fondo */
+    top: 14%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
     text-align: center;
 }
 
 .button-pedir {
     position: relative;
-    left: 8%; /* Lo posiciona en el centro horizontal */
+    left: 8%;
     top: -45%;
     padding: 10px 20px;
+    z-index: 90;
 }
 .button-descargar{
     position: relative;
-    left: 43%; /* Lo posiciona en el centro horizontal */
+    left: 43%;
     top: -20%;
     padding: 10px 20px;
 }
 .button-chat {
-    position: fixed; /* Fija el botón en la ventana del navegador */
+    position: fixed;
     top: 80px;
-    left: 20px; /* Lo posiciona a 20px desde la parte derecha */
+    left: 20px;
     padding: 8px 40px;
     margin-left: -30px;
-    z-index: 15; /* Asegura que esté sobre otros elementos */
-    transition: right 0.5s ease; /* Agrega una transición suave */
+    z-index: 15;
+    transition: right 0.5s ease;
 }
 
 .button-chat, .button-descargar, .button-pedir {
-    background-color: #e09c15; /* Cambia el color según tu diseño */
+    background-color: #e09c15;
     color: #ffffff;
     border-radius: 10px;
     border-color: #6c0b0d00;
@@ -131,30 +153,30 @@ h1 {
 
 }
 .titulos-flex {
-    display: flex; /* Hace que los elementos estén en línea */
-    justify-content: center; /* Centra los textos horizontalmente */
-    align-items: center; /* Asegura que estén alineados verticalmente */
-    gap: 10px; /* Espacio entre los elementos */
-    font-size: 40px; /* Tamaño de fuente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 40px;
     line-height: 0.7;
     text-align: center;
 }
 .titulos-pequeños {
     font-size: 27px;
-    text-align: center; /* Centra el texto horizontalmente */
+    text-align: center;
 }
 .cursiva{
-    font-size: 75px;
+    font-size: 60px;
 }
 
 .titulos2, .titulos2 h1, .titulos2 h2 {
-    color: white; /* Cambia el color del texto a blanco */
+    color: white;
 }
 .titulos2{
     position: absolute;
-    top: 9%; /* Lo posiciona en el centro vertical */
+    top: 9%;
     bottom: 7%;
-    left: 52%; /* Lo posiciona en el centro horizontal */
+    left: 52%;
     right: 14%;
 }
 .p2 {
@@ -165,8 +187,8 @@ h1 {
     font-style: normal;
 }
 .scale-down {
-    transform: scale(0.8); /* Ajusta el valor según sea necesario */
-    transform-origin: top left; /* Asegura que el punto de origen de la escala sea la esquina superior izquierda */
+    transform: scale(0.8);
+    transform-origin: top left;
 }
 /*ANIMACIÓN PARA LA PÁGINA 2*/
 .slide-top{
@@ -174,16 +196,16 @@ h1 {
 }
 @keyframes slide-top{
     0%{
-        transform:translateY(0) 
+        transform:translateY(0)
     }
     100%{
         transform:translateY(-100px)
     }
 }
 .scale-up-center{
-    animation:scale-up-center 2.9s; 
-} 
-@keyframes scale-up-center{ 
+    animation:scale-up-center 2.9s;
+}
+@keyframes scale-up-center{
     0% {
         transform: scale(0.5) translate(-50%, -50%);
     }
@@ -203,11 +225,20 @@ h1 {
         transform:translateX(40px)
     }
 }
+.screen.screen4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 200px;
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+}
 .map-fullscreen {
-    width: 100%; /* Ocupa todo el ancho del contenedor */  
-    position: relative; /* Mantiene su posición dentro del flujo del documento */
-    z-index: 1;/* Permite que el clic pase al enlace */
-    
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
 }
 /* FOOTER STYLES */
         footer {
@@ -215,7 +246,7 @@ h1 {
             color: var(--color-footer-text);
             padding: 40px 20px;
             text-align: center;
-            margin-top: auto; /* Empuja el footer al final si hay poco contenido */
+            margin-top: auto;
             width: 100%;
         }
 

@@ -1,49 +1,55 @@
 <?php
+
 require_once('../db/conexion.php');
 
-// Obtener los datos del formulario por el metodo POST
-$user = $_POST['user']; // Correo institucional
-$password = $_POST['password']; // Contraseña
-
- 
-
-// Consulta para obtener los datos del usuario por correo electrónico
-$stmt = $conexion->prepare("SELECT * FROM usuarios WHERE usuario = ?");
-$stmt->bind_param("s", $user);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-
-if ($result->num_rows > 0) {
-    // Verificar la contraseña ingresada con la contraseña hasheada almacenada
-    if ($result->num_rows > 0) {
-    // Verificar la contraseña ingresada con la contraseña hasheada almacenada
-    if ( ($password==$row['contraseña'])) {
-
-        session_start(); 
-        $_SESSION['user'] = $email;
-        $_SESSION['rol'] = $row['rol'];
-        $_SESSION['usuario'] = $row['usuario'];
-        $_SESSION['cedula'] = $row['cedula'];
-
-        // Redirigir según el rol
-        if ($row['rol'] == 1) {
-            header("Location:   ../landing/landing.php");
-        } else if ($row['rol'] == 0) {
-            header("Location: ../landing/landing.php");
-        }
-        exit(); // Asegura la redirección
-    } else {
-        // Contraseña incorrecta
-        header("Location: ../login-php/loging.php?message=error_password");
-        exit(); // Asegura la redirección
-    }
-}} else {
-    // Usuario no encontrado
-    header("Location: ../login-php/loging.php?message=error_user");
-    exit(); // Asegura la redirección 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
 
-$stmt->close();
-$conexion->close();
+$user_input = trim($_POST['user'] ?? '');
+$password_input = $_POST['password'] ?? '';
+
+if (empty($user_input) || empty($password_input)) {
+    header("Location: login.php?message=error_empty_fields");
+    exit();
+}
+
+try {
+    $stmt = $pdo->prepare("SELECT id, usuario, contraseña, rol, cedula, correo FROM usuarios WHERE usuario = :user");
+    $stmt->bindParam(':user', $user_input, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        if (password_verify($password_input, $row['contraseña'])) {
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['usuario'] = $row['usuario'];
+            $_SESSION['rol'] = $row['rol'];
+            $_SESSION['cedula'] = $row['cedula'];
+            $_SESSION['correo'] = $row['correo'];
+
+            session_regenerate_id(true);
+
+            if ($row['rol'] == 1 ) {
+                header("Location: ../landing/landing.php");
+            } elseif ($row['rol'] == 0){
+                header("Location: ../includes/panel_productos.php");
+            } else {
+                header("Location: login.php?message=error_invalid_role");
+            }
+            exit();
+        } else {
+            header("Location: login.php?message=error_password");
+            exit();
+        }
+    } else {
+        header("Location: login.php?message=error_user");
+        exit();
+    }
+
+} catch (PDOException $e) {
+    header("Location: login.php?message=error_general");
+    exit();
+}
 ?>

@@ -1,6 +1,5 @@
 <?php
-include '../db/conexion.php';
-
+include '../db/conexion.php'; 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion'];
@@ -8,11 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria = $_POST['categoria'];
     $imagen = '';
 
-    // Primero insertamos el producto sin imagen para obtener el ID
-    $ins = $conexion->prepare("INSERT INTO productos (nombre, descripcion, precio, imagen, categoria) VALUES (?, ?, ?, ?, ?)");
-    $ins->bind_param('ssdss', $nombre, $descripcion, $precio, $imagen, $categoria);
-    $ins->execute();
-    $nuevo_id = $conexion->insert_id;
+    // Insertar producto vacío para obtener el ID
+    $stmt = $pdo->prepare("INSERT INTO productos (nombre, descripcion, precio, imagen, categoria) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$nombre, $descripcion, $precio, $imagen, $categoria]);
+    $nuevo_id = $pdo->lastInsertId();
 
     // Procesar imagen si se subió
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -22,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dest = __DIR__ . "/assets/imagenes/" . $imagen;
         move_uploaded_file($tmp_name, $dest);
 
-        // Actualizar el campo imagen en la base de datos
-        $upd = $conexion->prepare("UPDATE productos SET imagen=? WHERE id=?");
-        $upd->bind_param('si', $imagen, $nuevo_id);
-        $upd->execute();
+        // Actualizar imagen en el producto
+        $upd = $pdo->prepare("UPDATE productos SET imagen = ? WHERE id = ?");
+        $upd->execute([$imagen, $nuevo_id]);
+
         $msg = "Producto creado con imagen.";
     } else {
         $msg = "Producto creado.";
@@ -65,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="edit-form">
         <h2>Crear Producto</h2>
-        <?php if(isset($msg)) echo '<div class="msg">'.$msg.'</div>'; ?>
+        <?php if (isset($msg)) echo '<div class="msg">' . $msg . '</div>'; ?>
         <form method="post" enctype="multipart/form-data">
             <label>Nombre:
                 <input type="text" name="nombre" required>

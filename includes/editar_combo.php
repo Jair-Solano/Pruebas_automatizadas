@@ -1,38 +1,36 @@
 <?php
-include 'conexion.php';
+include '../db/conexion.php'; 
 if (!isset($_GET['id'])) {
     echo "ID de combo no especificado.";
     exit;
 }
 $id = intval($_GET['id']);
+
 // Obtener datos del combo
-$stmt = $conexion->prepare("SELECT * FROM productos WHERE ID=?");
-$stmt->bind_param('i', $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$combo = $result->fetch_assoc();
+$stmt = $pdo->prepare("SELECT * FROM productos WHERE ID = ?");
+$stmt->execute([$id]);
+$combo = $stmt->fetch();
+
 if (!$combo) {
     echo "Combo no encontrado.";
     exit;
 }
+
 // Procesar edición
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-$categoria = $_POST['categoria'];
-$upd = $conexion->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, categoria=? WHERE ID=?");
-$upd->bind_param('ssdsi', $nombre, $descripcion, $precio, $categoria, $id);
-$upd->execute();
-$combo['categoria'] = $categoria;
+    $categoria = $_POST['categoria'];
 
     if (isset($_POST['eliminar'])) {
         // Eliminar combo
-        $del = $conexion->prepare("DELETE FROM productos WHERE ID=?");
-        $del->bind_param('i', $id);
-        $del->execute();
+        $del = $pdo->prepare("DELETE FROM productos WHERE ID = ?");
+        $del->execute([$id]);
+
         // Eliminar imagen asociada si existe
         $img_path = __DIR__ . "/assets/imagenes/combo$id.png";
         if (file_exists($img_path)) {
             unlink($img_path);
         }
+
         header('Location: panel_productos.php?msg=eliminado');
         exit;
     } else {
@@ -40,12 +38,15 @@ $combo['categoria'] = $categoria;
         $nombre = $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
         $precio = floatval($_POST['precio']);
-        $upd = $conexion->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=? WHERE ID=?");
-        $upd->bind_param('ssdi', $nombre, $descripcion, $precio, $id);
-        $upd->execute();
+
+        $upd = $pdo->prepare("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria = ? WHERE ID = ?");
+        $upd->execute([$nombre, $descripcion, $precio, $categoria, $id]);
+
         $combo['nombre'] = $nombre;
         $combo['descripcion'] = $descripcion;
         $combo['precio'] = $precio;
+        $combo['categoria'] = $categoria;
+
         // Procesar imagen si se subió
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
             $tmp_name = $_FILES['imagen']['tmp_name'];
@@ -53,11 +54,12 @@ $combo['categoria'] = $categoria;
             $imagen = $original_name;
             $dest = __DIR__ . "/assets/imagenes/" . $imagen;
             move_uploaded_file($tmp_name, $dest);
-            // Actualizar el campo imagen en la base de datos
-            $upd_img = $conexion->prepare("UPDATE productos SET imagen=? WHERE ID=?");
-            $upd_img->bind_param('si', $imagen, $id);
-            $upd_img->execute();
+
+            // Actualizar imagen en la base de datos
+            $upd_img = $pdo->prepare("UPDATE productos SET imagen = ? WHERE ID = ?");
+            $upd_img->execute([$imagen, $id]);
             $combo['imagen'] = $imagen;
+
             $msg = "Combo actualizado y imagen cambiada.";
         } else {
             $msg = "Combo actualizado.";
@@ -104,14 +106,14 @@ $combo['categoria'] = $categoria;
             <label>Precio:
                 <input type="number" name="precio" step="0.01" value="<?= htmlspecialchars($combo['precio']) ?>" required>
             </label>
-			<label>Categoría:
-    <select name="categoria" required>
-        <option value="">Selecciona una categoría</option>
-        <option value="combo" <?= $combo['categoria'] === 'combo' ? 'selected' : '' ?>>Combo</option>
-        <option value="batido" <?= $combo['categoria'] === 'batido' ? 'selected' : '' ?>>Batido</option>
-        <option value="refresco" <?= $combo['categoria'] === 'refresco' ? 'selected' : '' ?>>Refresco</option>
-    </select>
-</label>
+            <label>Categoría:
+                <select name="categoria" required>
+                    <option value="">Selecciona una categoría</option>
+                    <option value="combo" <?= $combo['categoria'] === 'combo' ? 'selected' : '' ?>>Combo</option>
+                    <option value="batido" <?= $combo['categoria'] === 'batido' ? 'selected' : '' ?>>Batido</option>
+                    <option value="refresco" <?= $combo['categoria'] === 'refresco' ? 'selected' : '' ?>>Refresco</option>
+                </select>
+            </label>
 
             <label>Imagen actual:</label>
             <img src="assets/imagenes/<?= htmlspecialchars($combo['imagen']) ?>?<?= time() ?>" alt="Imagen del combo" onerror="this.style.display='none'">

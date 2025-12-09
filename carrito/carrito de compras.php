@@ -1,3 +1,6 @@
+<?php
+session_start(); // Iniciar la sesión al principio
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -8,6 +11,9 @@
   <link rel="stylesheet" href="../assets/css/App_modificado.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/footer_1.css">
+  <link rel="stylesheet" href="../assets/css/header_1.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
   <style>
     .payment-method {
       border: 1px solid #dee2e6;
@@ -34,16 +40,17 @@
     }
   </style>
 </head>
-
+<?php 
+            include '../includes/header_1.php'; 
+            echo header_1();
+        ?>
 <body>
-  <header class="app-header">
-    <img src="../assets/imag/logo-color.png" alt="logo" class="logo">
-    <h1>El Callejon</h1>
-  </header>
 
   <div class="container py-5">
-    <h1 class="mb-4">Tu Carrito</h1>
-
+    <div class="titulos-flex" style="margin-left:-63vw; margin-top: 5vw;">
+      <h1>Tu carrito</h1>
+    </div>
+    
     <div class="row">
       <div class="col-md-8">
         <!-- Carrito dinámico -->
@@ -66,20 +73,6 @@
           <div class="card-body" id="resumen-carrito">
             <h5 class="card-title mb-3">Resumen del Pedido</h5>
             <p class="text-muted">Calculando total...</p>
-          </div>
-        </div>
-
-        <!-- Garantía -->
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-title mb-3">Garantía de compra</h6>
-            <div class="d-flex">
-              <i class="bi bi-shield-check text-success me-2" style="font-size: 1.5rem;"></i>
-              <div>
-                <small>Compra protegida con nuestro sistema de seguridad. Reembolso garantizado si no recibes tu
-                  pedido.</small>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -229,6 +222,10 @@
       renderProductosTabla(productos);
     });
   </script>
+  <?php 
+            include '../includes/footer_1.php'; 
+            echo footer_1();
+        ?>
 </body>
 
 </html>

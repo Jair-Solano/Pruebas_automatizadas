@@ -1,17 +1,13 @@
 <?php
 function footer_1() {
     return '
-    <footer class="footer">
+    <footer id="footer" class="footer">
         <div class="footer-content">
             <div class="footer-logo">
                 <img src="../assets/imag/logo-blanco.png" style="width: 13vw; margin-left: -4vw;" alt="Logo Syry">
             </div>
-            <div class="footer-section about">
-                <h4>Sobre Nosotros</h4>
-                <p>Somos tu destino principal para productos de calidad. Explora nuestro catálogo y encuentra lo que necesitas.</p>
-            </div>
             <div class="footer-section links">
-                <h4>Enlaces Rápidos</h4>
+                <h4>Enlacess Rápidos</h4>
                 <ul>
                     <li><a href="catalogo.php">Inicio</a></li>
                     <li><a href="#productos">Productos</a></li>  
@@ -19,7 +15,7 @@ function footer_1() {
             </div>
             <div class="footer-section contact">
                 <h4>Contáctanos</h4>
-                <p><i class="fas fa-map-marker-alt"></i> La Chorrera, Panamá Oeste, Panamá</p>
+                <p><i class="fas fa-map-marker-alt"></i>Calle Avenida Norte, Natá</p>
                 <p><i class="fas fa-phone"></i> +507 6XX-XXXX</p>
                 <p><i class="fas fa-envelope"></i> calleweb@gmail.com</p>
             </div>
