@@ -86,8 +86,6 @@ class CarritoTest extends TestCase
         $this->assertEquals(4, $resultado[0]['cantidad']);
     }
 
-    // TD3 (FALLA INTENCIONAL): Producto existe pero ya está en máximo (5)
-    // Se espera incorrectamente que suba a 6
     public function testTD_ProductoExistePeroNoDebeCambiar()
     {
         $carrito = [
@@ -98,7 +96,6 @@ class CarritoTest extends TestCase
 
         $resultado = agregarProductoAlCarrito($carrito, $producto);
 
-        // Fallo intencionado → esperamos incorrectamente 6
         $this->assertEquals(6, $resultado[0]['cantidad']);
     }
 
@@ -141,3 +138,4 @@ class CarritoTest extends TestCase
         $this->assertGreaterThanOrEqual(2, $resultado[6]['cantidad']);
     }
 }
+
